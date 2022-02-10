@@ -7,10 +7,10 @@
  */
 
 import React from 'react';
-import {StyleSheet, View, Button, TextInput, Text, Alert} from 'react-native';
+import {StyleSheet, View, Button, TextInput, Text} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
-import {addTask} from '../db/Realm';
 import {useNavigation} from '@react-navigation/native';
+import taskStore from '../db/Storage';
 
 const TaskForm = () => {
   const navigation = useNavigation();
@@ -26,8 +26,9 @@ const TaskForm = () => {
   });
 
   const onSubmit = data => {
-    addTask(data.title, data.description);
-    console.log(data);
+    // console.log(data);
+    taskStore.addTask(data);
+    taskStore.getTasks();
   };
 
   return (
@@ -38,13 +39,15 @@ const TaskForm = () => {
           <Controller
             control={control}
             rules={{required: true}}
-            render={({field: {onchange, onblur, value}}) => (
+            render={({field: {onChange, onBlur, value}}) => (
               <TextInput
                 style={styles.input}
-                onBlur={onblur}
-                onChangeText={onchange}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
               />
             )}
+            name="title"
           />
 
           {errors.title && (
@@ -59,8 +62,15 @@ const TaskForm = () => {
           <Controller
             control={control}
             rules={{required: true}}
-            render={({field: {onchange, onblur, value}}) => (
-              <TextInput style={styles['input-textarea']} focusable={true} />
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInput
+                style={styles['input-textarea']}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                multiline
+                numberOfLines={10}
+              />
             )}
             name="description"
           />
@@ -81,7 +91,7 @@ const TaskForm = () => {
           <Button
             title="Salvar"
             color="green"
-            onPress={() => handleSubmit(onSubmit)}
+            onPress={handleSubmit(onSubmit)}
           />
         </View>
         <View style={styles['button-container']}>
@@ -120,21 +130,18 @@ const styles = StyleSheet.create({
   },
   input: {
     margin: 5,
-    borderColor: 'black',
     borderStyle: 'solid',
     borderWidth: 1,
-    height: 3,
     marginTop: 2,
-    color: 'black',
   },
   'input-textarea': {
     margin: 5,
     borderColor: 'black',
     borderStyle: 'solid',
     borderWidth: 1,
-    height: 100,
-    padding: 0,
+    padding: 10,
     color: 'black',
+    textAlignVertical: 'top',
   },
   label: {
     marginBottom: 2,
@@ -145,7 +152,7 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   'container-actions': {
-    marginTop: 350,
+    marginTop: 180,
     marginLeft: 20,
     marginRight: 20,
     display: 'flex',
@@ -168,13 +175,9 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   'error-message': {
-    marginLeft: '1em',
-    color: 'red',
-    fontWeight: 'bold',
-  },
-  'error-message-textarea': {
-    marginLeft: '2em',
-    marginBottom: '1em',
+    marginLeft: 5,
+    marginBottom: 5,
+    marginTop: 5,
     color: 'red',
     fontWeight: 'bold',
   },
