@@ -7,53 +7,55 @@
  */
 
 import React from 'react';
-import {StyleSheet, Button, View, Text} from 'react-native';
+import {StyleSheet, Button, View} from 'react-native';
 import Task from './Task';
 import {useNavigation} from '@react-navigation/native';
 import {useLocalStore, useObserver} from 'mobx-react';
-import {taskStore} from '../db/Storage';
+import {getTasks} from '../db/Realm';
 
-// const StoreProvider = ({children}) => {
-//   const store = useLocalStore(() => ({
-//     tasks: [taskStore.getTasks()],
-//   }));
-
-//   return (
-//     <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
-//   );
-// };
+// <View style={styles['tasks-container']}>
+//   <Task
+//     createdAt={task.createdAt.toLocaleString('pt-BR')}
+//     taskTitle={task.title}
+//     description={task.description}
+//     id={task.id}
+//     key={i + 100}
+//   />
+// </View>
 
 const TaskList = () => {
   const navigation = useNavigation();
-  const StoreContext = React.createContext();
-
-  // const store = React.useContext(StoreContext);
+  const tasks = getTasks();
+  console.log(tasks);
+  const list = tasks.map((task, i) => {
+    return (
+      <View style={styles['tasks-container']}>
+        <Task
+          createdAt={task.createdAt.toLocaleString('pt-BR')}
+          taskTitle={task.title}
+          description={task.description}
+          id={task._id}
+          key={i}
+        />
+      </View>
+    );
+  });
 
   return (
-    // <StoreProvider>
     <View style={styles.container}>
-      {/*TaskCards*/}
-      <View style={styles['tasks-container']}>
-        {/* {store.tasks.map((task, i) => (
-          <Task
-            createdAt={task.createdAt}
-            taskTitle={task.title}
-            id={task.id}
-            key={i}
-          />
-        ))} */}
-        <Task createdAt={'04/02/2022'} taskTitle={'Capina'} id={1} />
-      </View>
-      {/*AddNewTaskButton*/}
+      {list}
       <View style={styles['button-add-container']}>
         <Button
           title="Adicionar"
           color="grey"
-          onPress={() => navigation.navigate('Add')}
+          onPress={() =>
+            navigation.navigate('Add', {
+              type: 'create',
+            })
+          }
         />
       </View>
     </View>
-    // </StoreProvider>
   );
 };
 
@@ -63,12 +65,15 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   'tasks-container': {
-    height: '90%',
+    marginBottom: 5,
   },
 
   'button-add-container': {
-    margin: 5,
     textAlign: 'center',
+    position: 'absolute',
+    bottom: 0,
+    marginBottom: 20,
+    width: '100%',
   },
 });
 

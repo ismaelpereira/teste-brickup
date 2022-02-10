@@ -7,28 +7,55 @@
  */
 
 import React from 'react';
-import {StyleSheet, View, Button, TextInput, Text} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Button,
+  TextInput,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
-import {useNavigation} from '@react-navigation/native';
-import taskStore from '../db/Storage';
+import {useRoute, useNavigation} from '@react-navigation/native';
+import {addTask, getTasks, updateTask} from '../db/Realm';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const TaskForm = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+
+  let formValues = {
+    title: '',
+    description: '',
+  };
+
+  const {createdAt, id, title, description, type} = route.params;
+
+  formValues.title = title;
+  formValues.description = description;
+  console.log(type);
+
   const {
     control,
     handleSubmit,
     formState: {errors},
   } = useForm({
     defaultValues: {
-      title: '',
-      description: '',
+      title: formValues.title,
+      description: formValues.description,
     },
   });
 
   const onSubmit = data => {
-    // console.log(data);
-    taskStore.addTask(data);
-    taskStore.getTasks();
+    console.log(data);
+    if (type === 'update') {
+      console.log('aaaaaa');
+      updateTask(id, data);
+    } else {
+      addTask(data);
+    }
+    let tasks = getTasks();
+    console.log(tasks);
   };
 
   return (
@@ -83,7 +110,10 @@ const TaskForm = () => {
         </View>
 
         <View style={styles['button-camera']}>
-          <Button title={'CAMERA'} />
+          <MaterialIcons.Button
+            name="camera-alt"
+            style={styles['button-camera-inside']}
+          />
         </View>
       </View>
       <View style={styles['container-actions']}>
@@ -173,6 +203,14 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginBottom: 10,
     marginLeft: 5,
+  },
+  'button-camera-inside': {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'grey',
+    borderRadius: 0,
+    paddingRight: -15,
   },
   'error-message': {
     marginLeft: 5,
