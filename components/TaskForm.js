@@ -80,17 +80,15 @@ const TaskForm = () => {
   };
 
   const onSubmit = data => {
-    console.log(data);
-    console.log(uri);
     data.uri = uri;
-    console.log(data);
+    data._id = id;
+    data.createdAt = createdAt;
+    setUri('');
     if (type === 'update') {
       taskStore.updateTask(data);
     } else {
       taskStore.addTask(data);
     }
-    let tasks = getTasks();
-    console.log(tasks);
   };
 
   return (

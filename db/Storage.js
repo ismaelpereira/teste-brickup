@@ -5,7 +5,7 @@ class TaskStore {
   tasks = getTasks();
 
   updateList() {
-    this.tasks = tasks;
+    this.tasks = getTasks();
   }
 
   constructor() {
@@ -19,17 +19,17 @@ class TaskStore {
   }
 
   addTask(task) {
-    addTask();
+    addTask(task);
     this.updateList();
   }
 
   deleteTask(id) {
-    deleteTask();
+    deleteTask(id);
     this.updateList();
   }
 
   updateTask(item) {
-    updateTask();
+    updateTask(item);
     this.updateList();
   }
 }

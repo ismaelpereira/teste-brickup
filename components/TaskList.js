@@ -17,31 +17,11 @@ import {taskStore} from '../db/Storage';
 const TaskList = () => {
   const navigation = useNavigation();
   const tasks = getTasks();
-  console.log(tasks);
 
-  // const list = (
-  //   <Observer>
-  //     {() => {
-  //       taskStore.tasks.map((task, i) => (
-  //         <View style={styles['tasks-container']}>
-  //           <Task
-  //             createdAt={task.createdAt.toLocaleString('pt-BR')}
-  //             taskTitle={task.title}
-  //             description={task.description}
-  //             id={task._id}
-  //             uri={task.uri}
-  //             key={i}
-  //           />
-  //         </View>
-  //       ));
-  //     }}
-  //     );
-  //   </Observer>
-  // );
   return (
     <View style={styles.container}>
-      <Observer>
-        {() => {
+      <Observer
+        render={() =>
           taskStore.tasks.map((task, i) => (
             <View style={styles['tasks-container']} key={i}>
               <Task
@@ -50,13 +30,13 @@ const TaskList = () => {
                 description={task.description}
                 id={task._id}
                 uri={task.uri}
-                key={i}
+                key={i++}
               />
             </View>
-          ));
-        }}
-        );
-      </Observer>
+          ))
+        }
+      />
+
       <View style={styles['button-add-container']}>
         <Button
           title="Adicionar"

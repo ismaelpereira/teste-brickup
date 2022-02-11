@@ -37,13 +37,16 @@ export const deleteTask = id => {
 };
 
 export const updateTask = value => {
-  r.objects('Tasks')
-    .filtered(`id == ${value._id}`)
-    .forEach(task => {
-      r.write(() => {
-        (task.title = value.title),
-          (task.description = value.description),
-          (task.createdAt = new Date().toLocaleDateString('pt-BR'));
-      });
+  const tasks = r.objects('Task');
+  const updated = tasks.filtered(`_id == ${value._id}`);
+  console.log(value);
+  console.log('VALUE ------------------------------------');
+  updated.forEach(task => {
+    r.write(() => {
+      task.title = value.title;
+      task.description = value.description;
+      task.createdAt = new Date().toLocaleDateString('pt-BR');
+      task.uri = value.uri;
     });
+  });
 };
