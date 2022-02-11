@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -19,10 +19,14 @@ import {useForm, Controller} from 'react-hook-form';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import {addTask, getTasks, updateTask} from '../db/Realm';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import * as ImagePicker from 'react-native-image-picker';
+import {taskStore} from '../db/Storage';
 
 const TaskForm = () => {
   const navigation = useNavigation();
   const route = useRoute();
+
+  const [uri, setUri] = useState('');
 
   let formValues = {
     title: '',
@@ -46,13 +50,44 @@ const TaskForm = () => {
     },
   });
 
+  const imagePicker = () => {
+    let options = {
+      title: 'Select Image',
+      customButtons: [
+        {name: 'customOptionKey', title: 'Choose Photo from Custom Option'},
+      ],
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    ImagePicker.launchImageLibrary(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        const source = {uri: response.uri};
+        console.log(source);
+        setUri(response.assets[0].uri);
+      }
+    });
+  };
+
   const onSubmit = data => {
     console.log(data);
+    console.log(uri);
+    data.uri = uri;
+    console.log(data);
     if (type === 'update') {
-      console.log('aaaaaa');
-      updateTask(id, data);
+      taskStore.updateTask(data);
     } else {
-      addTask(data);
+      taskStore.addTask(data);
     }
     let tasks = getTasks();
     console.log(tasks);
@@ -113,6 +148,7 @@ const TaskForm = () => {
           <MaterialIcons.Button
             name="camera-alt"
             style={styles['button-camera-inside']}
+            onPress={() => imagePicker()}
           />
         </View>
       </View>

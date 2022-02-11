@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import {StyleSheet, Button, View, Text} from 'react-native';
+import {StyleSheet, Button, View, Text, Image} from 'react-native';
 import {useRoute, useNavigation} from '@react-navigation/native';
 
 const TaskDetails = () => {
@@ -16,7 +16,7 @@ const TaskDetails = () => {
 
   console.log(route.params);
 
-  const {createdAt, id, title, description} = route.params;
+  const {createdAt, id, title, description, uri} = route.params;
   return (
     <View style={styles.container}>
       <View style={styles['title-container']}>
@@ -28,6 +28,10 @@ const TaskDetails = () => {
 
       <View>
         <Text style={styles.description}>{description}</Text>
+      </View>
+
+      <View>
+        <Image source={{uri: uri}} style={styles.image} />
       </View>
 
       <View style={styles['button-container']}>
@@ -62,6 +66,11 @@ const styles = StyleSheet.create({
     marginTop: 500,
     marginLeft: 5,
     marginRight: 5,
+  },
+  image: {
+    width: 500,
+    height: 250,
+    marginTop: 50,
   },
 });
 export default TaskDetails;

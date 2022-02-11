@@ -10,7 +10,7 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import {StyleSheet, Button, View, Text} from 'react-native';
 import TaskForm from './components/TaskForm';
-import TaskList from './components/TaskLisk';
+import TaskList from './components/TaskList';
 import TaskDetails from './components/TaskDetails';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';

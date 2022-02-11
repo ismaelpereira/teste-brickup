@@ -9,10 +9,10 @@
 import React from 'react';
 import {StyleSheet, Button, View, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {deleteTask, updateTask} from '../db/Realm';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {taskStore} from '../db/Storage';
 
-const Task = ({id, createdAt, taskTitle, description}) => {
+const Task = ({id, createdAt, taskTitle, description, uri}) => {
   const navigation = useNavigation();
 
   return (
@@ -34,6 +34,7 @@ const Task = ({id, createdAt, taskTitle, description}) => {
                 createdAt: createdAt,
                 title: taskTitle,
                 description: description,
+                uri: uri,
               })
             }
           />
@@ -56,7 +57,7 @@ const Task = ({id, createdAt, taskTitle, description}) => {
         <MaterialCommunityIcons.Button
           name="delete"
           style={styles['button-delete']}
-          onPress={() => deleteTask(id)}
+          onPress={() => taskStore.deleteTask(id)}
         />
       </View>
     </View>

@@ -7,6 +7,7 @@ const TaskSchema = {
     title: 'string',
     description: 'string',
     createdAt: 'string',
+    uri: 'string',
   },
   primaryKey: '_id',
 };
@@ -24,6 +25,7 @@ export const addTask = task => {
       title: task.title,
       description: task.description,
       createdAt: new Date().toLocaleDateString('pt-BR'),
+      uri: task.uri,
     });
   });
 };
@@ -34,17 +36,14 @@ export const deleteTask = id => {
   });
 };
 
-export const updateTask = (id, values) => {
-  r.write(() => {
-    r.objects('Task').map(task => {
-      if (task.id === id) {
-        console.log(task.id);
-        console.log(id);
-        task._id = id;
-        task.title = values.title;
-        task.description = values.description;
-        task.createdAt = values.createdAt;
-      }
+export const updateTask = value => {
+  r.objects('Tasks')
+    .filtered(`id == ${value._id}`)
+    .forEach(task => {
+      r.write(() => {
+        (task.title = value.title),
+          (task.description = value.description),
+          (task.createdAt = new Date().toLocaleDateString('pt-BR'));
+      });
     });
-  });
 };
